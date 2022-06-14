@@ -1,3 +1,0 @@
-D:/NAUKA_SSD/STUDIA/6_sem_ssd/par_proc/SATSolver/cmake-build-debug/CMakeFiles/SATSolver.dir
-D:/NAUKA_SSD/STUDIA/6_sem_ssd/par_proc/SATSolver/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/NAUKA_SSD/STUDIA/6_sem_ssd/par_proc/SATSolver/cmake-build-debug/CMakeFiles/rebuild_cache.dir
