@@ -22,7 +22,7 @@ private:
     long variables;
     long clausesQuantity;
     std::vector<Clause> clauses;
-    std::unordered_map<int, bool> result;
+    bool* result;
 public:
     SATSolver() : debug(false), variables(-1), clausesQuantity(-1) {};
 
@@ -30,11 +30,11 @@ public:
 
     bool loadFromFile(const std::string &fileName);
 
-    int checkClauses(const std::unordered_map<int, bool> &currentValues);
+    int checkClauses(bool* currentValues);
 
     bool findResult();
 
-    void solve(long n, const std::unordered_map<int, bool>& currentValues, int i, bool* success);
+    void solve(long n, bool* currentValues, int i, bool* success);
 
 };
 

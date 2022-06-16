@@ -11,19 +11,12 @@ Clause::Clause(bool debug, std::vector<int> literals) {
 
 }
 
-bool Clause::isSatisfiable(std::unordered_map<int, bool> currentValues) {
-    //if (debug) printClause();
+bool Clause::isSatisfiable(bool* currentValues) {
     for (auto literal: literals) {
         int index = getLiteralIndex(literal);
-        //if (debug) print(("literal: " + std::to_string(literal)));
-        //if (debug) print(("index: " + std::to_string(index)));
-        if (currentValues.contains(index)) {
-            //if (debug) print(("value: " + std::to_string(currentValues[index])));
-            if ((literal & 1) != currentValues[index]) {
-                //print("satisfied");
+            if ((literal & 1) != currentValues[index-1]) {
                 return true;
             }
-        }
     }
     return false;
 }

@@ -26,7 +26,7 @@ public:
 
     void printClause();
 
-    bool isSatisfiable(std::unordered_map<int, bool> currentValues);
+    bool isSatisfiable(bool* currentValues);
 };
 
 

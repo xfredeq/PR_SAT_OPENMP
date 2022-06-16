@@ -2,6 +2,7 @@
 // Created by frack on 22.05.2022.
 //
 
+#include <cstring>
 #include "SATSolver.h"
 
 SATSolver::SATSolver(bool debug) : SATSolver() {
@@ -92,12 +93,11 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
     return true;
 }
 
-int SATSolver::checkClauses(const std::unordered_map<int, bool> &currentValues) {
+int SATSolver::checkClauses(bool *currentValues) {
     int quantity = 0;
     for (auto clause: clauses) {
         if (clause.isSatisfiable(currentValues)) {
             quantity++;
-            //if (debug) clause.printClause();
         }
     }
     return quantity;
@@ -110,55 +110,48 @@ bool SATSolver::findResult() {
     bool *flagPointer = new bool;
     *flagPointer = false;
 
-    solve(this->clausesQuantity, {}, 0, flagPointer);
+    bool *entryValues = new bool[this->variables]();
+    solve(this->variables, entryValues, 0, flagPointer);
 
     double end = omp_get_wtime();
 
     print("TIME: " + std::to_string(end - start));
 
-    if (!this->result.empty()) {
+    if (*flagPointer) {
         std::cout << "result: " << std::endl;
-        for (auto val: result) {
-            std::cout << val.first << "  " << val.second << std::endl;
+        for (int i = 0; i < this->variables; i++) {
+            std::cout << i+1 << "  value: " << result[i] << std::endl;
         }
         return true;
     }
     return false;
 }
 
-void SATSolver::solve(long n, const std::unordered_map<int, bool> &currentValues, int i, bool *success) {
+void SATSolver::solve(long n, bool *currentValues, int i, bool *success) {
     if (*success) return;
 
-    //std::cout << "current vals: " << std::endl;
-//    for (auto val: currentValues) {
-        //std::cout << val.first << "  " << val.second << std::endl;
-//    }
-    //std::cout << "end vals" << std::endl;
 
     int satisfied = checkClauses(currentValues);
 
     if (satisfied == this->clausesQuantity) {
         *success = true;
         this->result = currentValues;
-//        print("finished success");
         return;
     }
 
     if (i > n) {
-        //print("finished failed 2");
         return;
     }
-//    if (debug) print(std::to_string(i));
 
-    std::unordered_map<int, bool> c1 = currentValues;
-    c1.insert({i + 1, false});
+    bool *c1 = new bool[this->variables]();
+    std::memcpy(c1, currentValues, sizeof(bool) * this->variables);
     solve(n, c1, i + 1, success);
 
 
-    std::unordered_map<int, bool> c2 = currentValues;
-    c2.insert({i + 1, true});
+    bool *c2 = new bool[this->variables]();
+    std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
+    c2[i] = true;
     solve(n, c2, i + 1, success);
-
 
 }
 
