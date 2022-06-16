@@ -6,12 +6,11 @@
 #define SATSOLVER_SATSOLVER_H
 
 
-#include<iostream>
-#include<string>
-#include<fstream>
-#include <sstream>
-#include <iterator>
+#include <iostream>
+#include <string>
+#include <fstream>
 #include <vector>
+#include <omp.h>
 
 #include "MyDebugger.h"
 #include "Clause.h"
@@ -35,7 +34,7 @@ public:
 
     bool findResult();
 
-    void solve(int n, const std::unordered_map<int, bool>& currentValues, int i, bool* success);
+    void solve(long n, const std::unordered_map<int, bool>& currentValues, int i, bool* success);
 
 };
 

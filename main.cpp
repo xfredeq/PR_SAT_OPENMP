@@ -6,7 +6,7 @@ bool debug = false;
 
 int main() {
     SATSolver solver(debug);
-    if (!solver.loadFromFile("testfile.txt")) {
+    if (!solver.loadFromFile("inputfile.txt")) {
         return 1;
     }
 

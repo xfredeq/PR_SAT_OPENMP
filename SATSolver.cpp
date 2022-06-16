@@ -105,11 +105,16 @@ int SATSolver::checkClauses(const std::unordered_map<int, bool> &currentValues) 
 
 bool SATSolver::findResult() {
 
+    double start = omp_get_wtime();
 
     bool *flagPointer = new bool;
     *flagPointer = false;
 
     solve(this->clausesQuantity, {}, 0, flagPointer);
+
+    double end = omp_get_wtime();
+
+    print("TIME: " + std::to_string(end - start));
 
     if (!this->result.empty()) {
         std::cout << "result: " << std::endl;
@@ -121,13 +126,13 @@ bool SATSolver::findResult() {
     return false;
 }
 
-void SATSolver::solve(int n, const std::unordered_map<int, bool> &currentValues, int i, bool *success) {
+void SATSolver::solve(long n, const std::unordered_map<int, bool> &currentValues, int i, bool *success) {
     if (*success) return;
 
     //std::cout << "current vals: " << std::endl;
-    for (auto val: currentValues) {
+//    for (auto val: currentValues) {
         //std::cout << val.first << "  " << val.second << std::endl;
-    }
+//    }
     //std::cout << "end vals" << std::endl;
 
     int satisfied = checkClauses(currentValues);
@@ -135,10 +140,7 @@ void SATSolver::solve(int n, const std::unordered_map<int, bool> &currentValues,
     if (satisfied == this->clausesQuantity) {
         *success = true;
         this->result = currentValues;
-        print("finished success");
-        return;
-    } else if (i > 0 && satisfied == 0) {
-        //print("finished failed 1");
+//        print("finished success");
         return;
     }
 
@@ -146,7 +148,7 @@ void SATSolver::solve(int n, const std::unordered_map<int, bool> &currentValues,
         //print("finished failed 2");
         return;
     }
-    if (debug) print(std::to_string(i));
+//    if (debug) print(std::to_string(i));
 
     std::unordered_map<int, bool> c1 = currentValues;
     c1.insert({i + 1, false});
