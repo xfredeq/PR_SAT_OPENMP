@@ -104,39 +104,37 @@ int SATSolver::checkClauses(bool *currentValues) {
 }
 
 bool SATSolver::findResult() {
-
     double start = omp_get_wtime();
 
-    bool *flagPointer = new bool;
-    *flagPointer = false;
+    this->success = new bool;
+    *this->success = false;
 
     bool *entryValues = new bool[this->variables]();
-    solve(entryValues, 0, flagPointer);
+    solve(entryValues, 0);
 
     double end = omp_get_wtime();
 
     print("TIME: " + std::to_string(end - start));
 
-    if (*flagPointer) {
+    if (*this->success) {
 //        std::cout << "result: " << std::endl;
 //        for (int i = 0; i < this->variables; i++) {
 //            std::cout << i+1 << "  value: " << result[i] << std::endl;
 //        }
-        delete flagPointer;
         delete[] entryValues;
         return true;
     }
     return false;
 }
 
-void SATSolver::solve(bool *currentValues, int i, bool *success) {
-    if (*success) return;
+void SATSolver::solve(bool *currentValues, int i) {
+    if (*this->success) return;
     if (i > this->variables) {
         return;
     }
     int satisfied = checkClauses(currentValues);
     if (satisfied == this->clausesQuantity) {
-        *success = true;
+        *this->success = true;
         this->result = currentValues;
         return;
     }
@@ -144,14 +142,13 @@ void SATSolver::solve(bool *currentValues, int i, bool *success) {
 
 //    bool *c1 = new bool[this->variables]();
 //    std::memcpy(c1, currentValues, sizeof(bool) * this->variables);
-    solve(currentValues, i + 1, success);
-
+    solve(currentValues, i + 1);
 
 
     bool *c2 = new bool[this->variables]();
     std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
     c2[i] = true;
-    solve(c2, i + 1, success);
+    solve(c2, i + 1);
 
 //    delete[] c1;
     delete[] c2;
