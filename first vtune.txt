@@ -8,3 +8,23 @@ std::unordered_map<int, bool, std::hash<int>, std::equal_to<int>, std::allocator
 std::unordered_map<int, bool, std::hash<int>, std::equal_to<int>, std::allocator<std::pair<int const, bool>>>::operator[]      SATSolver         0.856s              3.1%
 [Others]                                                                                                                       N/A               7.098s             25.7%
 
+Top Hotspots
+Function                                                                         Module     CPU Time  % of CPU Time(%)
+-------------------------------------------------------------------------------  ---------  --------  ----------------
+std::vector<int, std::allocator<int>>::vector                                    SATSolver    0.184s             51.1%
+std::vector<int, std::allocator<int>>::~vector                                   SATSolver    0.088s             24.4%
+__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int>>>::base  SATSolver    0.020s              5.6%
+Clause::getLiteralIndex                                                          SATSolver    0.020s              5.6%
+__gnu_cxx::new_allocator<int>::allocate                                          SATSolver    0.012s              3.3%
+[Others]                                                                         N/A          0.036s             10.0%
+
+
+Top Hotspots
+Function                                                                                  Module     CPU Time  % of CPU Time(%)
+----------------------------------------------------------------------------------------  ---------  --------  ----------------
+Clause::isSatisfiable                                                                     SATSolver    0.020s             25.0%
+Clause::getLiteralIndex                                                                   SATSolver    0.012s             15.0%
+__gnu_cxx::__normal_iterator<int*, std::vector<int, std::allocator<int>>>::operator++     SATSolver    0.012s             15.0%
+__gnu_cxx::__normal_iterator<Clause*, std::vector<Clause, std::allocator<Clause>>>::base  SATSolver    0.010s             12.5%
+SATSolver::solve                                                                          SATSolver    0.010s             12.5%
+[Others]                                                                                  N/A          0.016s             20.0%

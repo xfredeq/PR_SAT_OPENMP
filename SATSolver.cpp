@@ -95,7 +95,7 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
 
 int SATSolver::checkClauses(bool *currentValues) {
     int quantity = 0;
-    for (auto clause: clauses) {
+    for (auto &clause: clauses) {
         if (clause.isSatisfiable(currentValues)) {
             quantity++;
         }
@@ -111,48 +111,50 @@ bool SATSolver::findResult() {
     *flagPointer = false;
 
     bool *entryValues = new bool[this->variables]();
-    solve(this->variables, entryValues, 0, flagPointer);
+    solve(entryValues, 0, flagPointer);
 
     double end = omp_get_wtime();
 
     print("TIME: " + std::to_string(end - start));
 
     if (*flagPointer) {
-        std::cout << "result: " << std::endl;
-        for (int i = 0; i < this->variables; i++) {
-            std::cout << i+1 << "  value: " << result[i] << std::endl;
-        }
+//        std::cout << "result: " << std::endl;
+//        for (int i = 0; i < this->variables; i++) {
+//            std::cout << i+1 << "  value: " << result[i] << std::endl;
+//        }
+        delete flagPointer;
+        delete[] entryValues;
         return true;
     }
     return false;
 }
 
-void SATSolver::solve(long n, bool *currentValues, int i, bool *success) {
+void SATSolver::solve(bool *currentValues, int i, bool *success) {
     if (*success) return;
-
-
+    if (i > this->variables) {
+        return;
+    }
     int satisfied = checkClauses(currentValues);
-
     if (satisfied == this->clausesQuantity) {
         *success = true;
         this->result = currentValues;
         return;
     }
 
-    if (i > n) {
-        return;
-    }
 
-    bool *c1 = new bool[this->variables]();
-    std::memcpy(c1, currentValues, sizeof(bool) * this->variables);
-    solve(n, c1, i + 1, success);
+//    bool *c1 = new bool[this->variables]();
+//    std::memcpy(c1, currentValues, sizeof(bool) * this->variables);
+    solve(currentValues, i + 1, success);
+
 
 
     bool *c2 = new bool[this->variables]();
     std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
     c2[i] = true;
-    solve(n, c2, i + 1, success);
+    solve(c2, i + 1, success);
 
+//    delete[] c1;
+    delete[] c2;
 }
 
 

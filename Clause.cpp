@@ -11,12 +11,12 @@ Clause::Clause(bool debug, std::vector<int> literals) {
 
 }
 
-bool Clause::isSatisfiable(bool* currentValues) {
-    for (auto literal: literals) {
+bool Clause::isSatisfiable(const bool *currentValues) {
+    for (auto &literal: literals) {
         int index = getLiteralIndex(literal);
-            if ((literal & 1) != currentValues[index-1]) {
-                return true;
-            }
+        if ((literal & 1) != currentValues[index - 1]) {
+            return true;
+        }
     }
     return false;
 }

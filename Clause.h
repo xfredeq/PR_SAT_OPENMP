@@ -26,7 +26,7 @@ public:
 
     void printClause();
 
-    bool isSatisfiable(bool* currentValues);
+    bool isSatisfiable(const bool* currentValues);
 };
 
 
