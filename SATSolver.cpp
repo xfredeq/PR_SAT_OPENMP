@@ -36,7 +36,6 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
             return false;
         }
         part = line.substr(0, index);
-        if (debug) print("part: " + part);
 
         switch (i) {
             case 0:
@@ -124,6 +123,7 @@ bool SATSolver::findResult() {
         delete[] entryValues;
         return true;
     }
+    delete[] entryValues;
     return false;
 }
 

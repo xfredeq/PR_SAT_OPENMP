@@ -8,7 +8,6 @@
 Clause::Clause(bool debug, std::vector<int> literals) {
     this->debug = debug;
     this->literals = literals;
-
 }
 
 bool Clause::isSatisfiable(const bool *currentValues) {

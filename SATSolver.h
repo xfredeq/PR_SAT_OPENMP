@@ -22,8 +22,8 @@ private:
     long variables;
     long clausesQuantity;
     std::vector<Clause> clauses;
-    bool* result;
-    bool* success;
+    bool *result;
+    bool *success;
 public:
     SATSolver() : debug(false), variables(-1), clausesQuantity(-1), result(nullptr), success(nullptr) {};
 
@@ -31,11 +31,11 @@ public:
 
     bool loadFromFile(const std::string &fileName);
 
-    int checkClauses(bool* currentValues);
+    int checkClauses(bool *currentValues);
 
     bool findResult();
 
-    void solve(bool* currentValues, int i);
+    void solve(bool *currentValues, int i);
 
 };
 

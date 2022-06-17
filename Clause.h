@@ -20,13 +20,13 @@ private:
     static int getLiteralIndex(int literal);
 
 public:
-    Clause(): debug(false) {};
+    Clause() : debug(false) {};
 
     explicit Clause(bool debug, std::vector<int> literals);
 
     void printClause();
 
-    bool isSatisfiable(const bool* currentValues);
+    bool isSatisfiable(const bool *currentValues);
 };
 
 
