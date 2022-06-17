@@ -10,7 +10,6 @@ SATSolver::SATSolver(bool debug) : SATSolver() {
 }
 
 bool SATSolver::loadFromFile(const std::string &fileName) {
-
     std::ifstream inStream;
     inStream.open(fileName);
     if (!inStream) {
@@ -19,16 +18,12 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
     }
 
     std::string line;
-
     std::getline(inStream, line);
     while (line[0] == 'c' && !inStream.eof()) {
         std::getline(inStream, line);
     }
-    if (debug) print(line);
-
 
     std::string part;
-
     for (int i = 0; i < 4; ++i) {
         unsigned long long index = line.find(' ');
         if (index == std::string::npos && i < 3) {
@@ -80,15 +75,10 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
             literal > 0 ? literals.push_back(2 * literal) : literals.push_back(2 * abs(literal) + 1);
             inStream >> literal;
         }
-        if (debug) print("size: " + std::to_string(literals.size()));
         this->clauses.emplace_back(Clause(debug, literals));
         literals.clear();
     }
-
-
     inStream.close();
-
-    if (debug) print("CLAUSES COLLECTED: " + std::to_string(clauses.size()));
     return true;
 }
 
@@ -116,10 +106,6 @@ bool SATSolver::findResult() {
     print("TIME: " + std::to_string(end - start));
 
     if (*this->success) {
-//        std::cout << "result: " << std::endl;
-//        for (int i = 0; i < this->variables; i++) {
-//            std::cout << i+1 << "  value: " << result[i] << std::endl;
-//        }
         delete[] entryValues;
         return true;
     }
