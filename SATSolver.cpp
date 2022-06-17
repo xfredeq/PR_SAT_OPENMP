@@ -23,8 +23,6 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
     while (line[0] == 'c' && !inStream.eof()) {
         std::getline(inStream, line);
     }
-    if (debug) print(line);
-
 
     std::string part;
 
@@ -35,8 +33,6 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
             return false;
         }
         part = line.substr(0, index);
-        if (debug) print("part: " + part);
-
         switch (i) {
             case 0:
                 if (part != "p") {
@@ -71,7 +67,6 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
     }
 
     std::vector<int> literals;
-
     int literal;
     while (!inStream.eof()) {
         inStream >> literal;
@@ -80,15 +75,10 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
             literal > 0 ? literals.push_back(2 * literal) : literals.push_back(2 * abs(literal) + 1);
             inStream >> literal;
         }
-        if (debug) print("size: " + std::to_string(literals.size()));
         this->clauses.emplace_back(Clause(debug, literals));
         literals.clear();
     }
-
-
     inStream.close();
-
-    if (debug) print("CLAUSES COLLECTED: " + std::to_string(clauses.size()));
     return true;
 }
 
@@ -97,7 +87,6 @@ int SATSolver::checkClauses(const std::unordered_map<int, bool> &currentValues) 
     for (auto clause: clauses) {
         if (clause.isSatisfiable(currentValues)) {
             quantity++;
-            //if (debug) clause.printClause();
         }
     }
     return quantity;
@@ -117,10 +106,6 @@ bool SATSolver::findResult() {
     print("TIME: " + std::to_string(end - start));
 
     if (!this->result.empty()) {
-        std::cout << "result: " << std::endl;
-        for (auto val: result) {
-            std::cout << val.first << "  " << val.second << std::endl;
-        }
         return true;
     }
     return false;
@@ -129,37 +114,23 @@ bool SATSolver::findResult() {
 void SATSolver::solve(long n, const std::unordered_map<int, bool> &currentValues, int i, bool *success) {
     if (*success) return;
 
-    //std::cout << "current vals: " << std::endl;
-//    for (auto val: currentValues) {
-        //std::cout << val.first << "  " << val.second << std::endl;
-//    }
-    //std::cout << "end vals" << std::endl;
-
     int satisfied = checkClauses(currentValues);
-
     if (satisfied == this->clausesQuantity) {
         *success = true;
         this->result = currentValues;
-//        print("finished success");
         return;
     }
-
     if (i > n) {
-        //print("finished failed 2");
         return;
     }
-//    if (debug) print(std::to_string(i));
 
     std::unordered_map<int, bool> c1 = currentValues;
     c1.insert({i + 1, false});
     solve(n, c1, i + 1, success);
 
-
     std::unordered_map<int, bool> c2 = currentValues;
     c2.insert({i + 1, true});
     solve(n, c2, i + 1, success);
-
-
 }
 
 

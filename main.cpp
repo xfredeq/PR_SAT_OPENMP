@@ -13,7 +13,7 @@ int main() {
     if (solver.findResult()) {
         std::cout << "found" << std::endl;
     } else {
-        std::cout << "none" << std::endl;
+        std::cout << "not found" << std::endl;
     }
     return 0;
 }

@@ -34,7 +34,7 @@ public:
 
     bool findResult();
 
-    void solve(long n, const std::unordered_map<int, bool>& currentValues, int i, bool* success);
+    void solve(long n, const std::unordered_map<int, bool> &currentValues, int i, bool *success);
 
 };
 

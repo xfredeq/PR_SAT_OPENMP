@@ -20,7 +20,7 @@ private:
     static int getLiteralIndex(int literal);
 
 public:
-    Clause(): debug(false) {};
+    Clause() : debug(false) {};
 
     explicit Clause(bool debug, std::vector<int> literals);
 
