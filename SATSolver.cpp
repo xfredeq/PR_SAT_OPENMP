@@ -84,17 +84,10 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
 
 int SATSolver::checkClauses(bool *currentValues) {
     int quantity = 0;
-#pragma omp parallel
-    {
-        int localQuantity = 0;
-#pragma omp for
     for (auto &clause: clauses) {
         if (clause.isSatisfiable(currentValues)) {
-            localQuantity++;
+            quantity++;
         }
-    }
-#pragma omp critical
-        quantity += localQuantity;
     }
     return quantity;
 }
@@ -112,7 +105,6 @@ bool SATSolver::findResult() {
 
     double end = omp_get_wtime();
 
-    //print("TIME: " + std::to_string(end - start));
     std::cout<<(end-start)<<std::endl;
 
     if (*this->success) {
