@@ -11,13 +11,21 @@ Clause::Clause(bool debug, std::vector<int> literals) {
 }
 
 bool Clause::isSatisfiable(const bool *currentValues) {
-    for (auto &literal: literals) {
-        int index = getLiteralIndex(literal);
-        if ((literal & 1) != currentValues[index - 1]) {
-            return true;
+    bool result = false;
+    int index, i, literal;
+
+#pragma omp parallel private(i, index) shared(result, currentValues)
+    {
+#pragma omp for
+        for (i = 0; i < literals.size(); i++) {
+            literal = literals[i];
+            index = getLiteralIndex(literal);
+            if ((literal & 1) != currentValues[index - 1]) {
+                result = true;
+            }
         }
     }
-    return false;
+    return result;
 }
 
 int Clause::getLiteralIndex(int literal) {

@@ -88,11 +88,11 @@ int SATSolver::checkClauses(bool *currentValues) {
     {
         int localQuantity = 0;
 #pragma omp for
-    for (auto &clause: clauses) {
-        if (clause.isSatisfiable(currentValues)) {
-            localQuantity++;
+        for (auto &clause: clauses) {
+            if (clause.isSatisfiable(currentValues)) {
+                localQuantity++;
+            }
         }
-    }
 #pragma omp critical
         quantity += localQuantity;
     }
@@ -112,8 +112,7 @@ bool SATSolver::findResult() {
 
     double end = omp_get_wtime();
 
-    //print("TIME: " + std::to_string(end - start));
-    std::cout<<(end-start)<<std::endl;
+    std::cout << (end - start) << std::endl;
 
     if (*this->success) {
         delete[] entryValues;
