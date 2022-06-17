@@ -84,10 +84,17 @@ bool SATSolver::loadFromFile(const std::string &fileName) {
 
 int SATSolver::checkClauses(bool *currentValues) {
     int quantity = 0;
+#pragma omp parallel
+    {
+        int localQuantity = 0;
+#pragma omp for
     for (auto &clause: clauses) {
         if (clause.isSatisfiable(currentValues)) {
-            quantity++;
+            localQuantity++;
         }
+    }
+#pragma omp critical
+        quantity += localQuantity;
     }
     return quantity;
 }
@@ -99,11 +106,14 @@ bool SATSolver::findResult() {
     *this->success = false;
 
     bool *entryValues = new bool[this->variables]();
+#pragma omp parallel
+#pragma omp single
     solve(entryValues, 0);
 
     double end = omp_get_wtime();
 
-    print("TIME: " + std::to_string(end - start));
+    //print("TIME: " + std::to_string(end - start));
+    std::cout<<(end-start)<<std::endl;
 
     if (*this->success) {
         delete[] entryValues;
@@ -125,19 +135,18 @@ void SATSolver::solve(bool *currentValues, int i) {
         return;
     }
 
+#pragma omp task
+    {
+        solve(currentValues, i + 1);
+    }
 
-//    bool *c1 = new bool[this->variables]();
-//    std::memcpy(c1, currentValues, sizeof(bool) * this->variables);
-    solve(currentValues, i + 1);
-
-
-    bool *c2 = new bool[this->variables]();
-    std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
-    c2[i] = true;
-    solve(c2, i + 1);
-
-//    delete[] c1;
-    delete[] c2;
+#pragma omp task
+    {
+        bool *c2 = new bool[this->variables]();
+        std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
+        c2[i] = true;
+        solve(c2, i + 1);
+    }
 }
 
 
