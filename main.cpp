@@ -10,7 +10,7 @@ int main(int argc, char *argv[]) {
         int threads = std::stoi(argv[1]);
         omp_set_num_threads(threads);
     } else {
-        omp_set_num_threads(1);
+        omp_set_num_threads(4);
     }
     SATSolver solver(debug);
     if (!solver.loadFromFile("inputfile.txt")) {
