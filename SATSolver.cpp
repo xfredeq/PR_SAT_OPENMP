@@ -93,25 +93,28 @@ int SATSolver::checkClauses(bool *currentValues) {
 }
 
 bool SATSolver::findResult() {
-    double start = omp_get_wtime();
+    this->start = omp_get_wtime();
 
     this->success = new bool;
     *this->success = false;
 
     bool *entryValues = new bool[this->variables]();
-#pragma omp parallel
+    int i = 0;
+#pragma omp parallel default(none) firstprivate(entryValues, i)
 #pragma omp single
-    solve(entryValues, 0);
-
-    double end = omp_get_wtime();
-
-    std::cout<<(end-start)<<std::endl;
-
+    {
+        solve(entryValues, i);
+    }
     if (*this->success) {
-        delete[] entryValues;
+//        for (int i = 0; i < variables; ++i) {
+//            printf(" var %d value %d\n", i + 1, result[i]);
+//        }
+        delete[]
+                entryValues;
         return true;
     }
-    delete[] entryValues;
+    delete[]
+            entryValues;
     return false;
 }
 
@@ -123,22 +126,34 @@ void SATSolver::solve(bool *currentValues, int i) {
     int satisfied = checkClauses(currentValues);
     if (satisfied == this->clausesQuantity) {
         *this->success = true;
+        double end = omp_get_wtime();
+        std::cout << (end - start) << std::endl;
+
+
         this->result = currentValues;
+        for (int j = 0; j < variables; ++j) {
+            printf(" var %d value %d\n", j + 1, result[j]);
+        }
         return;
     }
 
-#pragma omp task
+#pragma omp task default(none) firstprivate(currentValues, i), untied
     {
         solve(currentValues, i + 1);
     }
 
-#pragma omp task
+
+#pragma omp task default(none) firstprivate(currentValues, i), untied
     {
         bool *c2 = new bool[this->variables]();
         std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
         c2[i] = true;
         solve(c2, i + 1);
+        delete[] c2;
     }
+
+#pragma omp taskwait
+
 }
 
 

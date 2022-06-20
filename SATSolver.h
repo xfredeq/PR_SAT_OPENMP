@@ -24,8 +24,9 @@ private:
     std::vector<Clause> clauses;
     bool *result;
     bool *success;
+    double start;
 public:
-    SATSolver() : debug(false), variables(-1), clausesQuantity(-1), result(nullptr), success(nullptr) {};
+    SATSolver() : debug(false), variables(-1), clausesQuantity(-1), result(nullptr), success(nullptr), start(-1) {};
 
     explicit SATSolver(bool debug);
 
