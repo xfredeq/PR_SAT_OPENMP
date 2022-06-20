@@ -100,7 +100,7 @@ bool SATSolver::findResult() {
 
     bool *entryValues = new bool[this->variables]();
     int i = 0;
-#pragma omp parallel default(none) firstprivate(entryValues, i)
+#pragma omp parallel
 #pragma omp single
     {
         solve(entryValues, i);
@@ -137,13 +137,13 @@ void SATSolver::solve(bool *currentValues, int i) {
         return;
     }
 
-#pragma omp task default(none) firstprivate(currentValues, i), untied
+#pragma omp task
     {
         solve(currentValues, i + 1);
     }
 
 
-#pragma omp task default(none) firstprivate(currentValues, i), untied
+#pragma omp task
     {
         bool *c2 = new bool[this->variables]();
         std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
@@ -151,8 +151,6 @@ void SATSolver::solve(bool *currentValues, int i) {
         solve(c2, i + 1);
         delete[] c2;
     }
-
-#pragma omp taskwait
 
 }
 
