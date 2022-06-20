@@ -7,7 +7,7 @@ bool debug = false;
 int main(int argc, char *argv[]) {
     omp_set_dynamic(0);
     std::string fileName = "inputfile.txt";
-    int threads = 4;
+    int threads = 2;
 
     if (argc > 2) {
         try {

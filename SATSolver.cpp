@@ -93,28 +93,26 @@ int SATSolver::checkClauses(bool *currentValues) {
 }
 
 bool SATSolver::findResult() {
-    this->start = omp_get_wtime();
-
     this->success = new bool;
     *this->success = false;
+    this->result = new bool[this->variables]();
 
-    bool *entryValues = new bool[this->variables]();
-    int i = 0;
-#pragma omp parallel
+    this->start = omp_get_wtime();
+
+#pragma omp parallel default(none)
 #pragma omp single
     {
+        bool *entryValues = new bool[this->variables]();
+        int i = 0;
         solve(entryValues, i);
+        //delete[] entryValues;
     }
     if (*this->success) {
 //        for (int i = 0; i < variables; ++i) {
 //            printf(" var %d value %d\n", i + 1, result[i]);
 //        }
-        delete[]
-                entryValues;
         return true;
     }
-    delete[]
-            entryValues;
     return false;
 }
 
@@ -129,28 +127,33 @@ void SATSolver::solve(bool *currentValues, int i) {
         double end = omp_get_wtime();
         std::cout << (end - start) << std::endl;
 
-
-        this->result = currentValues;
-        for (int j = 0; j < variables; ++j) {
-            printf(" var %d value %d\n", j + 1, result[j]);
-        }
+        std::memcpy(result, currentValues, sizeof(bool) * this->variables);
+//        for (int j = 0; j < variables; ++j) {
+//            printf(" var %d value %d\n", j + 1, result[j]);
+//        }
         return;
     }
 
-#pragma omp task
+#pragma omp task untied
     {
-        solve(currentValues, i + 1);
-    }
+#pragma omp task
+        {
+            solve(currentValues, i + 1);
+        }
 
 
 #pragma omp task
-    {
-        bool *c2 = new bool[this->variables]();
-        std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
-        c2[i] = true;
-        solve(c2, i + 1);
-        delete[] c2;
+        {
+            bool *c2 = new bool[this->variables]();
+            std::memcpy(c2, currentValues, sizeof(bool) * this->variables);
+            c2[i] = true;
+            solve(c2, i + 1);
+            delete[] c2;
+        }
+#pragma omp taskwait
     }
+
+#pragma omp taskwait
 
 }
 
